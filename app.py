@@ -119,8 +119,14 @@ def predict():
 
         print("STEP 6: models loaded")
 
-        if svm is None or rf is None or cnn is None:
-            return "Model not loaded"
+        if svm is None:
+            return "SVM model not loaded"
+
+        if rf is None:
+            return "RF model not loaded"
+
+        if cnn is None:
+            return "CNN model not loaded"
 
         flat = img_gray.flatten().reshape(1, -1)
 
