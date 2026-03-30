@@ -75,8 +75,8 @@ def signup():
         conn.close()
 
         return redirect("/login")
-    except Exception as e:
-        return f"Error: {str(e)}"
+    except:
+        return "Error"
 
 @app.route("/logout")
 def logout():
@@ -128,8 +128,9 @@ def predict():
             img_path=path
         )
 
-    except:
-        return "Error"
+    except Exception as e:
+        import traceback
+    return f"<pre>{traceback.format_exc()}</pre>"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=7860)
