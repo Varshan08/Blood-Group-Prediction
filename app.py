@@ -86,29 +86,41 @@ def logout():
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
-        load_models()
-
-        if svm is None or rf is None or cnn is None:
-            return "Model not loaded"
+        print("STEP 1: entering predict")
 
         file = request.files.get("file")
+        print("STEP 2: file =", file)
 
         if file is None or file.filename == "":
             return "No file uploaded"
-        print("FILES:", request.files)
 
         os.makedirs("static", exist_ok=True)
         path = os.path.join("static", "test.jpg")
         file.save(path)
 
-        img_color = cv2.imread(path)
-        img_gray = cv2.imread(path, 0)
+        print("STEP 3: file saved at", path)
 
-        if img_color is None or img_gray is None:
-            return "Image processing failed. Try another image."
+        # FORCE CHECK
+        if not os.path.exists(path):
+            return "File not saved properly"
 
-        img_color = cv2.resize(img_color, (100, 100))
-        img_gray = cv2.resize(img_gray, (100, 100))
+        from PIL import Image
+        img = Image.open(path).convert("RGB")
+        img = np.array(img)
+
+        print("STEP 4: image loaded")
+
+        img_color = cv2.resize(img, (100, 100))
+        img_gray = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)
+
+        print("STEP 5: image processed")
+
+        load_models()
+
+        print("STEP 6: models loaded")
+
+        if svm is None or rf is None or cnn is None:
+            return "Model not loaded"
 
         flat = img_gray.flatten().reshape(1, -1)
 
@@ -121,18 +133,15 @@ def predict():
         cnn_pred = labels[np.argmax(probs)]
         confidence = round(float(np.max(probs)) * 100, 2)
 
-        return render_template(
-            "result.html",
-            svm=svm_pred,
-            rf=rf_pred,
-            cnn=cnn_pred,
-            confidence=confidence,
-            img_path=path
-        )
+        print("STEP 7: prediction done")
+
+        return f"SVM: {svm_pred}, RF: {rf_pred}, CNN: {cnn_pred}, Confidence: {confidence}%"
 
     except Exception as e:
         import traceback
-    return f"<pre>{traceback.format_exc()}</pre>"
+        print("ERROR OCCURRED:")
+        print(traceback.format_exc())
+        return f"<pre>{traceback.format_exc()}</pre>"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=7860)
