@@ -85,9 +85,10 @@ def logout():
 
 @app.route("/predict", methods=["POST"])
 def predict():
+    global svm, rf, cnn   # ✅ ADD THIS
+
     try:
         print("STEP 1: entering predict")
-
         file = request.files.get("file")
         print("STEP 2: file =", file)
 
