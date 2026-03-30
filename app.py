@@ -27,7 +27,16 @@ if not os.path.exists("rf_model.pkl"):
         quiet=False
     )
 
+if not os.path.exists("svm_model.pkl"):
+    print("Downloading SVM model...")
+    gdown.download(
+        "https://drive.google.com/uc?id=1Dy9VOhUf_ISKTbgy38gXrCKLkYLa_25w",
+        "svm_model.pkl",
+        quiet=False
+    )
+
 # -------- LOAD MODELS --------
+svm = pickle.load(open("svm_model.pkl", "rb"))
 rf = pickle.load(open("rf_model.pkl", "rb"))
 cnn = load_model("cnn_model.h5")
 
@@ -109,8 +118,9 @@ def predict():
         img_color = cv2.resize(img_color, (100, 100))
         img_gray = cv2.resize(img_gray, (100, 100))
 
-        # -------- RF --------
+        # -------- ML --------
         flat = img_gray.flatten().reshape(1, -1)
+        svm_pred = svm.predict(flat)[0]
         rf_pred = rf.predict(flat)[0]
 
         # -------- CNN --------
@@ -122,6 +132,7 @@ def predict():
 
         return render_template(
             "result.html",
+            svm=svm_pred,
             rf=rf_pred,
             cnn=cnn_pred,
             confidence=confidence,
