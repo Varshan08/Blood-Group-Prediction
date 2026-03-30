@@ -126,7 +126,11 @@ def predict():
             return "RF model not loaded"
 
         if cnn is None:
-            return "CNN model not loaded"
+            try:
+                cnn = load_model("cnn_model_tf")
+                print("CNN LOADED SUCCESSFULLY")
+            except Exception as e:
+                print("CNN LOAD ERROR:", e)
 
         flat = img_gray.flatten().reshape(1, -1)
 
