@@ -2,6 +2,7 @@ import os
 import cv2
 import numpy as np
 import pickle
+import gzip
 import gdown
 import sqlite3
 from flask import Flask, render_template, request, redirect, session
@@ -36,7 +37,9 @@ if not os.path.exists("svm_model.pkl"):
     )
 
 # -------- LOAD MODELS --------
-svm = pickle.load(open("svm_model.pkl", "rb"))
+with gzip.open("svm_model.pkl", "rb") as f:
+    svm = pickle.load(f)
+
 rf = pickle.load(open("rf_model.pkl", "rb"))
 cnn = load_model("cnn_model.h5")
 
