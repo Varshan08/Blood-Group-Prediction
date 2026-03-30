@@ -92,8 +92,10 @@ def predict():
             return "Model not loaded"
 
         file = request.files.get("file")
-        if not file:
-            return "No file"
+
+        if file is None or file.filename == "":
+            return "No file uploaded"
+        print("FILES:", request.files)
 
         os.makedirs("static", exist_ok=True)
         path = os.path.join("static", "test.jpg")
@@ -102,8 +104,8 @@ def predict():
         img_color = cv2.imread(path)
         img_gray = cv2.imread(path, 0)
 
-        if img_color is None:
-            return "Invalid image"
+        if img_color is None or img_gray is None:
+            return "Image processing failed. Try another image."
 
         img_color = cv2.resize(img_color, (100, 100))
         img_gray = cv2.resize(img_gray, (100, 100))
