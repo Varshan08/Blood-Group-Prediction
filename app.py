@@ -10,15 +10,32 @@ from tensorflow.keras.models import load_model
 app = Flask(__name__)
 app.secret_key = "secret123"
 
-# -------- DOWNLOAD & LOAD MODELS --------
+# -------- DOWNLOAD MODELS IF NOT PRESENT --------
 if not os.path.exists("cnn_model.h5"):
-    print("Downloading CNN model from Google Drive...")
+    print("Downloading CNN model...")
     gdown.download(
         "https://drive.google.com/uc?id=1-rxeak69wd3xkDhaMyDQ5BpP-9WYO40f",
         "cnn_model.h5",
         quiet=False
     )
 
+if not os.path.exists("rf_model.pkl"):
+    print("Downloading RF model...")
+    gdown.download(
+        "https://drive.google.com/uc?id=11YlCO1H3_egYLviJ1WGBbbBy1Uv5qaqT",
+        "rf_model.pkl",
+        quiet=False
+    )
+
+if not os.path.exists("svm_model.pkl"):
+    print("Downloading SVM model...")
+    gdown.download(
+        "https://drive.google.com/uc?id=1wUkeSK38JIfYsvm1Kl71EkZacNvQJMhT",
+        "svm_model.pkl",
+        quiet=False
+    )
+
+# -------- LOAD MODELS --------
 svm = pickle.load(open("svm_model.pkl", "rb"))
 rf = pickle.load(open("rf_model.pkl", "rb"))
 cnn = load_model("cnn_model.h5")
