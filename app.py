@@ -27,8 +27,8 @@ def load_models():
     if rf is None and os.path.exists("rf_model.joblib"):
         rf = load("rf_model.joblib")
 
-    if cnn is None and os.path.exists("cnn_model.h5"):
-        cnn = load_model("cnn_model.h5", compile=False)
+    if cnn is None and os.path.exists("cnn_model_fixed.h5"):
+        cnn = load_model("cnn_model_fixed.h5", compile=False)
 
 labels = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
 
