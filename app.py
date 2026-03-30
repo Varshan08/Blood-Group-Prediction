@@ -75,8 +75,8 @@ def signup():
         conn.close()
 
         return redirect("/login")
-    except:
-        return "Error"
+    except Exception as e:
+        return f"Error: {str(e)}"
 
 @app.route("/logout")
 def logout():
