@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>Prediction Result</h2>
+
+       <img 
+    src="{{ img_path }}" 
+    class="result-img"
+    alt="Uploaded fingerprint image"
+    title="Fingerprint used for prediction"
+>
+
+        <div class="result">
+            {{ cnn }}
+        </div>
+
+        <p class="confidence">
+            Confidence: {{ confidence }}%
+        </p>
+
+        <div class="models">
+            SVM: {{ svm }} | RF: {{ rf }}
+        </div>
+
+        <p class="note">
+            *Experimental AI model for pattern-based prediction
+        </p>
+
+        <a href="/">
+            <button>Try Again</button>
+        </a>
+
+    </div>
+
+</div>
+
+<div id="particles-js"></div>
+
+<script>
+particlesJS("particles-js", {
+  particles: {
+    number: { value: 60 },
+    size: { value: 3 },
+    move: { speed: 2 },
+    line_linked: { enable: true }
+  }
+});
+</script>
+
+</body>
+</html>

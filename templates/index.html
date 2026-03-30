@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Blood Group Detection</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- 🔥 HEADER -->
+    <div class="hero">
+        <h1>🧬 BioPrint AI</h1>
+        <p>Fingerprint Intelligence for Predictive Analysis</p>
+    </div>
+
+    <!-- 🔥 CARD -->
+    <div class="card">
+
+        <form action="/predict" method="post" enctype="multipart/form-data" onsubmit="showLoader()">
+
+            <label for="file">Upload Fingerprint</label>
+
+            <input 
+                type="file"
+                id="file"
+                name="file"
+                accept="image/*"
+                title="Upload fingerprint image"
+                required
+                onchange="previewImage()"
+            >
+
+            <img id="preview" alt="Preview">
+
+            <button type="submit">Analyze Now 🚀</button>
+
+        </form>
+
+        <div id="loader">🧠 AI analyzing patterns...</div>
+
+    </div>
+
+    <!-- 🔥 FOOTER -->
+    <div class="footer">
+        <p>⚡ Powered by AI • ML • Deep Learning</p>
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
