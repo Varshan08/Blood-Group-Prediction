@@ -5,8 +5,8 @@ import pickle
 import gdown
 import zipfile
 import sqlite3
+import tensorflow as tf
 from flask import Flask, render_template, request, redirect, session
-from tensorflow.keras.models import load_model
 
 app = Flask(__name__)
 app.secret_key = "secret123"
@@ -34,7 +34,7 @@ if not os.path.exists("rf_model.pkl"):
 
 # -------- LOAD MODELS --------
 rf = pickle.load(open("rf_model.pkl", "rb"))
-cnn = load_model("cnn_saved_model")
+cnn = tf.keras.layers.TFSMLayer("cnn_saved_model", call_endpoint="serving_default")
 
 labels = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
 
@@ -119,11 +119,13 @@ def predict():
         rf_pred = rf.predict(flat)[0]
 
         # -------- CNN --------
-        cnn_img = img_color.reshape(1, 100, 100, 3).astype("float32") / 255.0
-
-        probs = cnn.predict(cnn_img, verbose=0)[0]
+        cnn_img = tf.constant(
+            img_color.reshape(1, 100, 100, 3).astype("float32") / 255.0
+        )
+        output = cnn(cnn_img)
+        probs = list(output.values())[0].numpy()[0]
         cnn_pred = labels[np.argmax(probs)]
-        confidence = round(max(probs) * 100, 2)
+        confidence = round(float(max(probs)) * 100, 2)
 
         return render_template(
             "result.html",
