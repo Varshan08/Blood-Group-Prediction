@@ -36,6 +36,12 @@ if not os.path.exists("rf_model.pkl"):
 rf = pickle.load(open("rf_model.pkl", "rb"))
 cnn = tf.keras.layers.TFSMLayer("cnn_saved_model", call_endpoint="serving_default")
 
+# -------- WARM UP CNN --------
+print("Warming up CNN model...")
+dummy = tf.constant(np.zeros((1, 100, 100, 3), dtype="float32"))
+_ = cnn(dummy, training=False)
+print("CNN ready!")
+
 labels = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
 
 # -------- LOGIN PAGE --------
@@ -51,13 +57,11 @@ def login():
 
     conn = sqlite3.connect("users.db")
     cur = conn.cursor()
-
     cur.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
     user = cur.fetchone()
 
     print("LOGIN INPUT:", username, password)
     print("DB RESULT:", user)
-
     conn.close()
 
     if user:
@@ -80,11 +84,9 @@ def signup():
 
     conn = sqlite3.connect("users.db")
     cur = conn.cursor()
-
     cur.execute("INSERT INTO users (username,password) VALUES (?,?)", (username, password))
     conn.commit()
     conn.close()
-
     return redirect("/login")
 
 # -------- LOGOUT --------
@@ -103,7 +105,6 @@ def predict():
             return "No file selected"
 
         os.makedirs("static", exist_ok=True)
-
         path = os.path.join("static", "test.jpg")
         file.save(path)
 
@@ -122,7 +123,7 @@ def predict():
         cnn_img = tf.constant(
             img_color.reshape(1, 100, 100, 3).astype("float32") / 255.0
         )
-        output = cnn(cnn_img)
+        output = cnn(cnn_img, training=False)
         probs = list(output.values())[0].numpy()[0]
         cnn_pred = labels[np.argmax(probs)]
         confidence = round(float(max(probs)) * 100, 2)
@@ -137,7 +138,6 @@ def predict():
 
     except Exception as e:
         return f"Error: {str(e)}"
-
 
 if __name__ == "__main__":
     app.run(debug=True)
