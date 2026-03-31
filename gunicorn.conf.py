@@ -1,5 +1,5 @@
-timeout = 600
+timeout = 120
 workers = 1
 bind = "0.0.0.0:10000"
-worker_class = "sync"
-graceful_timeout = 600
+graceful_timeout = 120
+keepalive = 5
