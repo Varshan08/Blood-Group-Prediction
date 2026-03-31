@@ -2,6 +2,7 @@ import os
 import cv2
 import numpy as np
 import pickle
+import gzip
 import gdown
 import sqlite3
 from flask import Flask, render_template, request, redirect, session
@@ -11,11 +12,11 @@ app = Flask(__name__)
 app.secret_key = "secret123"
 
 # -------- DOWNLOAD MODELS IF NOT PRESENT --------
-if not os.path.exists("cnn_model.h5"):
+if not os.path.exists("cnn_model2.h5"):
     print("Downloading CNN model...")
     gdown.download(
-        "https://drive.google.com/uc?id=1-rxeak69wd3xkDhaMyDQ5BpP-9WYO40f",
-        "cnn_model.h5",
+        "https://drive.google.com/uc?id=1rEGhd_wTliMLPWzrxrHCGjpV4Aqvx-ck",
+        "cnn_model2.h5",
         quiet=False
     )
 
@@ -29,7 +30,7 @@ if not os.path.exists("rf_model.pkl"):
 
 # -------- LOAD MODELS --------
 rf = pickle.load(open("rf_model.pkl", "rb"))
-cnn = load_model("cnn_model.h5")
+cnn = load_model("cnn_model2.h5")
 
 labels = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
 
